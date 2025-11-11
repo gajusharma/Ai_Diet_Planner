@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: smart-ai-diet-backend
+    env: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONHASHSEED
+        value: "0"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    autoDeploy: true

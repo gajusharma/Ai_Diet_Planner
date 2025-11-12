@@ -61,7 +61,27 @@ Set the following env vars in Render → *Environment*:
    - Set `FORCE_REFRESH_FOODS=true` in env vars and redeploy, or
    - Use Render shell: `python utils/seed_data.py`.
 
-## 5. Frontend Deployment (Vercel)
+   ## 5. Backend Deployment (Replit)
+
+   Use this path if you prefer to host the FastAPI backend on Replit instead of Render.
+
+   1. Create a new Repl and import the GitHub repository (`gajusharma/Ai_Diet_Planner`).
+   2. Replit reads the `.replit` and `replit.nix` files to prepare a Python 3.11 environment and automatically installs the backend dependencies.
+   3. Once the install step finishes, the server starts with:
+      ```bash
+      cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+      ```
+   4. In **Secrets** (lock icon), add the backend environment variables listed earlier (`MONGO_URI`, `MONGO_DB_NAME`, `FOOD_COLLECTION_NAME`, `JWT_SECRET`, `GEMINI_API_KEY`, `GEMINI_MODEL`, `FORCE_REFRESH_FOODS`).
+   5. For the initial deployment, set `FORCE_REFRESH_FOODS=true` so the seed script runs on startup. After the data is seeded, remove or set it to `false` and click **Run** again.
+   6. Replit exposes a public HTTPS URL (shown in the webview). Use this URL as the API base for the frontend.
+   7. If you need to rerun the install step manually, open the Shell tab and run:
+      ```bash
+      pip install -r backend/requirements.txt
+      ```
+
+   > **Note:** Keep the Repl running or enable the Always On upgrade so the API stays reachable.
+
+   ## 6. Frontend Deployment (Vercel)
 
 1. In Vercel → **Add New Project**.
 2. Select GitHub repo, choose root `frontend`.
@@ -73,7 +93,7 @@ Set the following env vars in Render → *Environment*:
 5. Add environment variable `VITE_API_BASE_URL` with backend URL.
 6. Deploy. Launch the provided domain.
 
-## 6. Testing Locally
+## 7. Testing Locally
 
 Backend:
 ```powershell
@@ -92,12 +112,12 @@ npm install
 npm run dev
 ```
 
-## 7. Optional: GitHub Workflows
+## 8. Optional: GitHub Workflows
 
 - Add CI to lint/test backend.
 - Add Vercel/Render deploy hooks for automatic deployments.
 
-## 8. Maintenance
+## 9. Maintenance
 
 - Monitor Render logs and Atlas metrics.
 - Rotate secrets periodically.

@@ -1,0 +1,12 @@
+run = "cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
+entrypoint = "backend/main.py"
+
+[env]
+PYTHONPATH = "backend"
+PYTHONUNBUFFERED = "1"
+
+[[prep.commands]]
+command = "python -m pip install --upgrade pip"
+
+[[prep.commands]]
+command = "pip install -r backend/requirements.txt"

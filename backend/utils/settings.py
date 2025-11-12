@@ -1,11 +1,12 @@
 from functools import lru_cache
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     mongo_uri: str
     mongo_db_name: str = "smart_ai_diet"
-    jwt_secret: str
+    jwt_secret_key: str = Field(..., alias="JWT_SECRET")
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24
     gemini_api_key: str | None = None

@@ -1,3 +1,4 @@
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import PyMongoError
 
@@ -17,7 +18,7 @@ def connect_to_mongo() -> None:
     if mongo_client:
         return
     settings = get_settings()
-    mongo_client = AsyncIOMotorClient(settings.mongo_uri)
+    mongo_client = AsyncIOMotorClient(settings.mongo_uri, tlsCAFile=certifi.where())
 
 
 def close_mongo_connection() -> None:

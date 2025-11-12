@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import axios from "axios";
 
 import api, { extractErrorMessage } from "@/utils/api";
 import { clearToken, setToken } from "@/utils/auth";
@@ -67,7 +68,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data } = await api.get<UserProfile>("/user/me");
       setUser({ ...defaultProfile, ...data } as UserProfile);
     } catch (error) {
-      console.error("Failed to load profile", error);
+      // 401 is expected when not logged in, don't log as error
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        console.log("User not authenticated");
+      } else {
+        console.error("Failed to load profile", error);
+      }
       clearToken();
       setUser(null);
     } finally {

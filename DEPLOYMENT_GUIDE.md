@@ -61,7 +61,18 @@ Set the following env vars in Render → *Environment*:
    - Set `FORCE_REFRESH_FOODS=true` in env vars and redeploy, or
    - Use Render shell: `python utils/seed_data.py`.
 
-   ## 5. Backend Deployment (Replit)
+   ## 5. Backend Deployment (Railway)
+
+   1. Install the [Railway CLI](https://docs.railway.app/develop/cli) and log in, or use the dashboard.
+   2. Connect the GitHub repository and create a new service.
+   3. Railway reads `railway.toml`, which pins the service root to `backend`, installs `requirements.txt`, sets `PYTHON_VERSION=3.11`, and starts `uvicorn` with `main:app`.
+   4. In Railway → *Variables*, add the same environment variables listed for Render. Set `FORCE_REFRESH_FOODS=true` for the first deploy to seed data; remove or set to `false` afterward and redeploy.
+   5. Trigger a deploy. The logs should show `uvicorn` binding to the provided `$PORT` once dependencies finish installing.
+   6. Copy the public domain from the Railway service details and use it as the API base for the frontend (`https://<service>.up.railway.app`).
+
+   If you prefer to configure manually instead of relying on `railway.toml`, make sure the service directory is `backend`, build command `pip install -r requirements.txt`, and start command `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+
+   ## 6. Backend Deployment (Replit)
 
    Use this path if you prefer to host the FastAPI backend on Replit instead of Render.
 
@@ -81,7 +92,7 @@ Set the following env vars in Render → *Environment*:
 
    > **Note:** Keep the Repl running or enable the Always On upgrade so the API stays reachable.
 
-   ## 6. Frontend Deployment (Vercel)
+   ## 7. Frontend Deployment (Vercel)
 
 1. In Vercel → **Add New Project**.
 2. Select GitHub repo, choose root `frontend`.
@@ -93,7 +104,7 @@ Set the following env vars in Render → *Environment*:
 5. Add environment variable `VITE_API_BASE_URL` with backend URL.
 6. Deploy. Launch the provided domain.
 
-## 7. Testing Locally
+## 8. Testing Locally
 
 Backend:
 ```powershell
@@ -112,12 +123,12 @@ npm install
 npm run dev
 ```
 
-## 8. Optional: GitHub Workflows
+## 9. Optional: GitHub Workflows
 
 - Add CI to lint/test backend.
 - Add Vercel/Render deploy hooks for automatic deployments.
 
-## 9. Maintenance
+## 10. Maintenance
 
 - Monitor Render logs and Atlas metrics.
 - Rotate secrets periodically.

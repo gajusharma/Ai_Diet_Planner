@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from database import close_mongo_connection, connect_to_mongo
 from routes.auth_routes import router as auth_router
@@ -18,6 +19,21 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Smart AI Diet Planner", lifespan=lifespan)
 
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    # Log the exception traceback for debugging in Railway logs
+    import traceback
+
+    print("--- Unhandled Exception ---")
+    traceback.print_exc()
+    print("---------------------------")
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": f"An unexpected error occurred: {exc}"},
+    )
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -25,7 +41,6 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "https://ai-diet-planner-rho.vercel.app",
         "https://aidietplanner.vercel.app",
-        "https://ai-diet-planner-git-main-gajusharmas-projects.vercel.app",
     ],
     allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,

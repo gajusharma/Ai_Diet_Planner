@@ -5,7 +5,7 @@
   "installCommand": "npm install",
   "outputDirectory": "dist",
   "env": {
-    "VITE_API_BASE_URL": "https://your-backend-url.onrender.com"
+    "VITE_API_BASE_URL": "https://smart-ai-diet-backend-production.up.railway.app"
   },
   "routes": [
     { "handle": "filesystem" },

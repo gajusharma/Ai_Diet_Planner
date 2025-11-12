@@ -1,15 +1,8 @@
 root = "backend"
 
 [build]
-builder = "NIXPACKS"
-buildCommand = "python -m pip install --upgrade pip && python -m pip install -r requirements.txt"
-
-[build.env]
-NIXPACKS_PYTHON_VERSION = "3.11"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "uvicorn main:app --host 0.0.0.0 --port $PORT"
 restartPolicyType = "ON_FAILURE"
-
-[deploy.env]
-PYTHON_VERSION = "3.11"

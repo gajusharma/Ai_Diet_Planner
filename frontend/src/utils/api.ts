@@ -3,9 +3,15 @@ import axios from "axios";
 
 import { getToken, clearToken } from "./auth";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  (import.meta.env.PROD
+    ? "https://smart-ai-diet-backend-production.up.railway.app"
+    : "http://localhost:8000");
+
 const createApiClient = (): AxiosInstance =>
   axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000",
+    baseURL: API_BASE_URL,
     headers: {
       "Content-Type": "application/json",
     },

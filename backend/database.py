@@ -1,4 +1,5 @@
 import certifi
+import ssl
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import PyMongoError
 
@@ -18,7 +19,26 @@ def connect_to_mongo() -> None:
     if mongo_client:
         return
     settings = get_settings()
-    mongo_client = AsyncIOMotorClient(settings.mongo_uri, tlsCAFile=certifi.where())
+    
+    try:
+        # Create SSL context with proper CA certificates
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        ssl_context.check_hostname = False  # Disable hostname verification for MongoDB Atlas
+        ssl_context.verify_mode = ssl.CERT_REQUIRED
+        
+        mongo_client = AsyncIOMotorClient(
+            settings.mongo_uri,
+            ssl=True,
+            ssl_context=ssl_context,
+            tlsAllowInvalidCertificates=False,
+            tlsAllowInvalidHostnames=True,  # Allow Atlas hostnames
+            serverSelectionTimeoutMS=5000,  # 5 second timeout
+            connectTimeoutMS=10000  # 10 second connection timeout
+        )
+        print(f"MongoDB connection initialized with SSL context using certifi: {certifi.where()}")
+    except Exception as e:
+        print(f"Failed to initialize MongoDB connection: {e}")
+        raise
 
 
 def close_mongo_connection() -> None:
